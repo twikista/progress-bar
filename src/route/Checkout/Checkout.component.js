@@ -1,6 +1,8 @@
 
 import ProgressBar from 'Component/ProgressBar';
 import ContentWrapper from '@scandipwa/scandipwa/src/component/ContentWrapper';
+import CheckoutShipping from 'Component/CheckoutShipping';
+import CheckoutBilling from 'Component/CheckoutBilling';
 
 import {
     BILLING_STEP,
@@ -18,6 +20,27 @@ import './Checkout.override.style';
 
 /** @namespace ProgressBar/Route/Checkout/Component */
 export class CheckoutComponent extends SourceCheckout {
+    state={activeStep:1}
+
+    nextHandler = () => {
+        console.log("i got clicked")
+       
+        const stepsArray = Object.values(this.stepMap)
+      if (this.state.activeStep < stepsArray.length) {
+        this.setState({activeStep:this.state.activeStep + 1});
+      }
+      console.log(stepsArray.length)
+      console.log(this.state.activeStep)
+    };
+  
+    // const prevHandler = () => {
+    //   if (activeStep > 1) {
+    //     setActiveStep(activeStep - 1);
+    //   }
+    // };
+  
+
+    
     stepMap = {
         [SHIPPING_STEP]: {
             title: __('Shipping step'),
@@ -41,10 +64,64 @@ export class CheckoutComponent extends SourceCheckout {
         }
     };
 
+    renderShippingStep() {
+        const {
+            shippingMethods,
+            onShippingEstimationFieldsChange,
+            saveAddressInformation,
+            isDeliveryOptionsLoading,
+            onPasswordChange,
+            onCreateUserChange,
+            onEmailChange,
+            isCreateUser,
+            estimateAddress
+        } = this.props;
+
+        return (
+            <CheckoutShipping
+              isLoading={ isDeliveryOptionsLoading }
+              shippingMethods={ shippingMethods }
+              saveAddressInformation={ saveAddressInformation }
+              onShippingEstimationFieldsChange={ onShippingEstimationFieldsChange }
+              onPasswordChange={ onPasswordChange }
+              onCreateUserChange={ onCreateUserChange }
+              onEmailChange={ onEmailChange }
+              isCreateUser={ isCreateUser }
+              estimateAddress={ estimateAddress }
+              nextHandler={this.nextHandler}
+            />
+        );
+    }
+
+    renderBillingStep() {
+        const {
+            setLoading,
+            setDetailsStep,
+            shippingAddress,
+            paymentMethods = [],
+            savePaymentInformation,
+            selectedShippingMethod
+        } = this.props;
+
+        return (
+            <CheckoutBilling
+              setLoading={ setLoading }
+              paymentMethods={ paymentMethods }
+              setDetailsStep={ setDetailsStep }
+              shippingAddress={ shippingAddress }
+              savePaymentInformation={ savePaymentInformation }
+              selectedShippingMethod={ selectedShippingMethod }
+              nextHandler={this.nextHandler}
+            />
+        );
+    }
+
     render() {
+
+        console.log(this.state.activeStep)
         return (
             <main block="Checkout">
-                <ProgressBar stepsArray= {this.stepMap}/>
+                <ProgressBar stepsArray= {this.stepMap} activeStep={this.state.activeStep}/>
                 
                 <ContentWrapper
                   wrapperMix={ { block: 'Checkout', elem: 'Wrapper' } }

@@ -1,21 +1,15 @@
 // import PropTypes from 'prop-types';
 import { PureComponent } from 'react';
-import {withRouter} from 'react-router';
 import CheckIcon from 'Component/CheckIcon';
 
 import './ProgressBar.style';
 
 export class ProgressBar extends PureComponent {
-    state={activeStep:1}
-
-    updateState = ()=>{
-        cosnt 
-    }
+    state = {activeStep:1}
 
     render() {
-        console.log(this.state.activeStep)
-        console.log(this.props.match.url)
-        console.log(this.props.history.location.pathname)
+        
+        console.log(this.props)
         const stepsArray= Object.values(this.props.stepsArray)
         return (
             <div block="ProBar">
@@ -25,7 +19,7 @@ export class ProgressBar extends PureComponent {
                 key={i}
                 index={i}
                 className={`indicator-wrapper ${
-                  i < this.state.activeStep ? "active" : null
+                  i < this.props.activeStep ? "active" : null
                 }`}
               >
                 <div className="pbar-width">
@@ -34,8 +28,8 @@ export class ProgressBar extends PureComponent {
                 {stepsArray.length - 1 !== i && (
                   <div className="pbStep-wrapper">
                     <div className="pbStep">
-                      {/* {this.state.activeStep - i > 1 ? <CheckIcon /> : step.number} */}
-                      {i+1}
+                      {this.props.activeStep - i > 1 ? <CheckIcon /> : i+1}
+                      
                     </div>
                     <span className="pbStep-name">{step.title}</span>
                   </div>
@@ -49,7 +43,7 @@ export class ProgressBar extends PureComponent {
 }
 
 
-export default withRouter(ProgressBar)
+export default ProgressBar
 
 
 
